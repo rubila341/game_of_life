@@ -1,5 +1,6 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QSlider, QLabel, QGridLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QSlider, QLabel, QGridLayout, \
+    QComboBox
 from PyQt6.QtCore import QTimer, Qt
 from game_of_life_ui import Canvas
 from game_of_life_utils import Grid, update_grid, ALIVE, EMPTY
@@ -48,6 +49,7 @@ TEMPLATES = {
     ]
 }
 
+
 class GameOfLife(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -81,11 +83,12 @@ class GameOfLife(QMainWindow):
 
         self.speed_label = QLabel('Simulation Speed')
 
-        template_layout = QGridLayout()
-        for i, (name, _) in enumerate(TEMPLATES.items()):
-            button = QPushButton(name)
-            button.clicked.connect(lambda checked, name=name: self.select_template(name))
-            template_layout.addWidget(button, i // 3, i % 3)
+        # Создание выпадающего списка для выбора шаблона
+        self.template_combo = QComboBox()
+        self.template_combo.addItems(TEMPLATES.keys())
+        self.template_combo.currentTextChanged.connect(self.select_template)
+        self.template_combo.setStyleSheet("QComboBox::drop-down { border: 1px solid black; }"
+                                          "QComboBox::down-arrow { image: url(arrow_down.png); }")
 
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
@@ -94,7 +97,7 @@ class GameOfLife(QMainWindow):
         layout.addWidget(self.reset_button)
         layout.addWidget(self.speed_label)
         layout.addWidget(self.speed_slider)
-        layout.addLayout(template_layout)
+        layout.addWidget(self.template_combo)  # Добавление выпадающего списка
 
         container = QWidget()
         container.setLayout(layout)
@@ -131,6 +134,7 @@ class GameOfLife(QMainWindow):
         self.timer_interval = 200 - speed
         if self.running:
             self.timer.start(self.timer_interval)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

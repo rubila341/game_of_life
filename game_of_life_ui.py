@@ -3,6 +3,7 @@ from PyQt6.QtGui import QPainter, QColor
 from PyQt6.QtCore import Qt, QRect
 from game_of_life_utils import ALIVE, EMPTY
 
+
 class Canvas(QWidget):
     def __init__(self, parent):
         super().__init__(parent)

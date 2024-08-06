@@ -3,23 +3,17 @@ import numpy as np
 ALIVE = '*'
 EMPTY = '-'
 
+
 def count_neighbors(grid, y, x):
-    neighbors = [
-        (y + 1, x + 0),  # North
-        (y + 1, x + 1),  # Northeast
-        (y + 0, x + 1),  # East
-        (y - 1, x + 1),  # Southeast
-        (y - 1, x + 0),  # South
-        (y - 1, x - 1),  # Southwest
-        (y + 0, x - 1),  # West
-        (y + 1, x - 1)   # Northwest
-    ]
+    directions = [(dy, dx) for dy in range(-1, 2) for dx in range(-1, 2) if not (dy == 0 and dx == 0)]
     count = 0
-    for ny, nx in neighbors:
+    for dy, dx in directions:
+        ny, nx = y + dy, x + dx
         if 0 <= ny < grid.height and 0 <= nx < grid.width:
             if grid[ny, nx] == ALIVE:
                 count += 1
     return count
+
 
 def game_logic(state, neighbors_count):
     if state == ALIVE:
@@ -30,6 +24,7 @@ def game_logic(state, neighbors_count):
             return ALIVE  # Regenerate
     return state
 
+
 def update_grid(grid):
     new_grid = Grid(grid.height, grid.width)
     for y in range(grid.height):
@@ -37,6 +32,7 @@ def update_grid(grid):
             neighbors_count = count_neighbors(grid, y, x)
             new_grid[y, x] = game_logic(grid[y, x], neighbors_count)
     return new_grid
+
 
 class Grid:
     def __init__(self, height, width):
